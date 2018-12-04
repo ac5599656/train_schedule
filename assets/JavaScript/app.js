@@ -28,19 +28,19 @@ $("#submit").on("click", function (event) {
     // console.log(moment(firstTrainTime, 'h:mm A').format('HH:mm'));
     // var militaryTime = moment('firstTrainTime').format("HH:mm");
 
-    console.log(moment(firstTrainTime, "h:mm  a A").format("HH:mm"));
+    // console.log(moment(firstTrainTime, "h:mm  a A").format("HH:mm"));
     var militaryTime = moment(firstTrainTime, "h:mm  a A").format("HH:mm");
     console.log(firstTrainTime);
     console.log(militaryTime);
     console.log(militaryTime);
-    nextTrain = moment().add(frequencyTime, 'm');
-    console.log(nextTrain);
-    while (now.isAfter(militaryTime)) {
+    // nextTrain = moment().add(frequencyTime, 'm');
+    // console.log(nextTrain);
+    while (moment().isAfter(militaryTime)) {
         nextTrain = moment().add(frequencyTime, 'minutes');
         console.log(nextTrain);
-        var nextArrival = moment(timeNext).format("hh:mm A");
+        nextArrival = moment(nextTrain).format("HH:mm");
         console.log(nextTrain);
-        if (nextArrival == now) {
+        if (nextArrival.isSame(now)) {
             break;
         }
     }
@@ -84,7 +84,7 @@ function populate(militaryTime, nextArrival) {
     // var difference2 = now - militaryTime;
     // difference = moment().format(difference, "h:mm:ss");
     // console.log(difference2);
-    console.log(moment.duration().minutes());
+    // console.log(moment.duration().minutes());
     // var diffMinutes = moment().format(difference, "h:mm:ss");
     // console.log(diffMinutes);
 
