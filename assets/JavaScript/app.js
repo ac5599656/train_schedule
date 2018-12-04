@@ -35,15 +35,17 @@ $("#submit").on("click", function (event) {
     console.log(militaryTime);
     // nextTrain = moment().add(frequencyTime, 'm');
     // console.log(nextTrain);
-    while (moment().isAfter(militaryTime)) {
-        nextTrain = moment().add(frequencyTime, 'minutes');
+    // sessionStorage.setItem("train", trainName);
+    // sessionStorage.setItem("city", destination);
+    // sessionStorage.setItem("time", firstTrainTime);
+    // sessionStorage.setItem("freq", frequencyTime);
+    nextTrain = moment(firstTrainTime, 'HH:mm')
+    while (moment().isAfter(nextTrain, "HH:mm")) {
+        nextTrain = nextTrain.add(frequencyTime, 'm');
         console.log(nextTrain);
-        nextArrival = moment(nextTrain).format("HH:mm");
-        console.log(nextTrain);
-        if (nextArrival.isSame(now)) {
-            break;
-        }
     }
+    nextArrival = moment(nextTrain).format("HH:mm");
+    console.log(nextArrival);
 
     trainInfo.push({
         name: trainName,
@@ -51,8 +53,9 @@ $("#submit").on("click", function (event) {
         trainTime: firstTrainTime,
         time: frequencyTime
     });
+    localStorage.setItem("trainSchedule", JSON.stringify(trainInfo));
     resetFields();
-    populate(nextTrain);
+    populate(nextTrain, nextArrival);
 });
 
 function resetFields() {
@@ -67,6 +70,9 @@ function resetFields() {
 
 function populate(militaryTime, nextArrival) {
     // createRow on the table;
+    var duration = moment.duration(moment(nextArrival, "HH:mm").diff(moment())).asMinutes()
+    var minutesTill = Math.round(duration);
+    console.log(duration);
     var tBody = $("tbody");
     var tRow = $("<tr>");
 
@@ -74,11 +80,11 @@ function populate(militaryTime, nextArrival) {
     var dest = $("<td>").text(destination);
     var freqTime = $("<td>").text(frequencyTime);
     var trainSchedule = $("<td>").text(nextArrival);
+    var minutesAway = $("<td>").text(minutesTill);
     // console.log(nextArrival);
     // var differenceTime = moment().diff(moment(trainSchedule), "minutes");
     // var difference = trainSchedule.diff(moment(), "minutes");
-    // var duration = moment.duration(moment(nextTrain, "HH:mm").diff(moment())).asMinutes();
-    // console.log(duration);
+
     // var difference = moment(militaryTime, "h:mm:ss").fromNow();
 
     // var difference2 = now - militaryTime;
@@ -95,7 +101,7 @@ function populate(militaryTime, nextArrival) {
     // var minutesleft = $("<td>").text(rest);
 
 
-    tRow.append(trainNa, dest, freqTime, trainSchedule);
+    tRow.append(trainNa, dest, freqTime, trainSchedule, minutesAway);
     tBody.append(tRow);
 
 }
