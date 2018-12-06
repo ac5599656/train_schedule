@@ -5,9 +5,17 @@ var frequencyTime = 0;
 var militaryTime;
 var nextArrival;
 
-var trainInfo = [];
+if (JSON.parse(localStorage.getItem("trainSchedule") === null)) {
+    var trainInfo = [];
+}
+else {
+    var trainInfo = JSON.parse(localStorage.getItem("trainSchedule"));
+}
+
 var now = moment().format("HH: mm");
 var nextTrain = "";
+
+populate2(trainInfo);
 
 // moment.relativeTimeThreshold('m', 60);
 console.log(now);
@@ -51,8 +59,10 @@ $("#submit").on("click", function (event) {
         name: trainName,
         location: destination,
         trainTime: firstTrainTime,
+        nextArrival: nextArrival,
         time: frequencyTime
     });
+    console.log(trainInfo)
     localStorage.setItem("trainSchedule", JSON.stringify(trainInfo));
     resetFields();
     populate(nextTrain, nextArrival);
@@ -64,7 +74,6 @@ function resetFields() {
     $("#first-train-time").val("");
     $("#frequency-time").val("");
 }
-
 
 
 
@@ -105,6 +114,56 @@ function populate(militaryTime, nextArrival) {
     tBody.append(tRow);
 
 }
+
+function populate2(train) {
+    if (train) {
+
+        console.log(train);
+        for (let i = 0; i < train.length; i++) {
+
+
+            // createRow on the table;
+            var duration = moment.duration(moment(train[i].nextArrival, "HH:mm").diff(moment())).asMinutes()
+            var minutesTill = Math.round(duration);
+            console.log(duration);
+            var tBody = $("tbody");
+            var tRow = $("<tr>");
+
+            var trainNa = $("<td>").text(train[i].name);
+            var dest = $("<td>").text(train[i].location);
+            var freqTime = $("<td>").text(train[i].time);
+            var trainSch = $("<td>").text(train[i].nextArrival);
+            var minutesAway = $("<td>").text(minutesTill);
+            // console.log(nextArrival);
+            // var differenceTime = moment().diff(moment(trainSchedule), "minutes");
+            // var difference = trainSchedule.diff(moment(), "minutes");
+
+            // var difference = moment(militaryTime, "h:mm:ss").fromNow();
+
+            // var difference2 = now - militaryTime;
+            // difference = moment().format(difference, "h:mm:ss");
+            // console.log(difference2);
+            // console.log(moment.duration().minutes());
+            // var diffMinutes = moment().format(difference, "h:mm:ss");
+            // console.log(diffMinutes);
+
+            // console.log(difference);
+            // var remainderTime = differenceTime % freqTime;
+            // var restTimeDiff = freqTime - differenceTime;
+            // var rest = moment(restTimeDiff, "minutes");
+            // var minutesleft = $("<td>").text(rest);
+
+
+            tRow.append(trainNa, dest, freqTime, trainSch, minutesAway);
+            tBody.append(tRow);
+        }
+    }
+}
+
+// pass local storage train array to populate2 function
+// console.log(JSON.parse(localStorage.getItem("trainSchedule")))
+
+
 
 // var firstTimeTransfered = moment(locoFirstTrain, "hh:mm").subtract(1, "years");
 // console.log(firstTimeTransfered);
